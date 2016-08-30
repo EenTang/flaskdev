@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask.ext.login import UserMixin, current_app, AnonymousUserMixin
+from flask_login import UserMixin, current_app, AnonymousUserMixin
 from . import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
@@ -78,7 +78,6 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
-    avarda_hash = db.Column(db.String(32))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
     # followed是动词的主动态，指a followed b, 所以a is follower;建立follower和followed的关系
@@ -103,10 +102,8 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(permissions=0xff).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
-        if self.email is not None and self.avarda_hash is None:
-            self.avarda_hash = hashlib.md5(
-                self.email.encode('utf-8')).hexdigest()
-        # 如果写成在测试的时候self.follow(self)则会导致数据库操作错误
+
+        # 如果写成测试的时候self.follow(self)则会导致数据库操作错误
         self.followed.append(Follow(followed=self))
 
     def can(self, permission):
@@ -120,16 +117,6 @@ class User(UserMixin, db.Model):
     def ping(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
-
-    def gravatar(self, size=100, default='identicon', rating='g'):
-        if request.is_secure:
-            url = 'https://secure.gravatar.com/avatar'
-        else:
-            url = 'http://www.gravatar.com/avatar'
-        hash = self.avarda_hash or hashlib.md5(
-            self.email.encode('utf-8')).hexdigest()
-        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
-            url=url, hash=hash, size=size, default=default, rating=rating)
 
     def follow(self, user):
         if not self.is_following(user):

@@ -1,18 +1,19 @@
 # -*- coding:utf-8 -*-
 from flask import Flask
-from flask.ext.bootstrap import Bootstrap
-from flask.ext.moment import Moment
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.mail import Mail
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from config import config
-from flask.ext.login import LoginManager
-from flask.ext.pagedown import PageDown
-
+from flask_login import LoginManager
+from flask_pagedown import PageDown
+from flask_avatar import Avatar
 
 bootstrap = Bootstrap()
 moment = Moment()
 db = SQLAlchemy()
 mail = Mail()
+avatar = Avatar()
 pagedown = PageDown()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -33,6 +34,7 @@ def create_app(config_name):
     mail.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)
+    avatar.init_app(app)
 
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)

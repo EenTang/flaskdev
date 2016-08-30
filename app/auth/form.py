@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, \
     ValidationError
 from wtforms.validators import Required, Regexp, Email, Length, EqualTo
@@ -72,3 +72,4 @@ class PasswordResetForm(Form):
     def validate_email(self, field):  # 这个确认邮箱是怎么调用出来确认的？
         if User.query.filter_by(email=field.data).first() is None:
             raise ValidationError('Email already registered.')
+

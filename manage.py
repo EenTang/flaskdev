@@ -9,8 +9,8 @@ if os.environ.get('FLASK_COVERAGE'):
 
 
 from app import create_app, db
-from flask.ext.script import Manager, Shell
-from flask.ext.migrate import Migrate, MigrateCommand
+from flask_script import Manager, Shell
+from flask_migrate import Migrate, MigrateCommand
 from app.models import User, Role, Post
 import sys
 
@@ -63,7 +63,7 @@ def profile(length=25, profile_dir=None):
 @manager.command
 def deploy():
     """Run deployment tasks."""
-    from flask.ext.migrate import upgrade
+    from flask_migrate import upgrade
     from app.models import Role, User
 
     upgrade()

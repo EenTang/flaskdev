@@ -5,9 +5,9 @@ from flask import render_template, url_for, redirect, flash, abort, request, \
 from .forms import PostForm, EditProfileForm, EditAdminstratorProfileForm, \
     CommentForm
 from ..models import User, db, Role, Post, Permission, Comment
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 from ..decorators import adminstrator_required, permission_required
-from flask.ext.sqlalchemy import get_debug_queries
+from flask_sqlalchemy import get_debug_queries
 
 
 @main.route('/', methods=['GET', 'POST'])

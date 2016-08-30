@@ -3,12 +3,12 @@ from . import auth
 from flask import render_template, redirect, flash, url_for, request
 from form import LoginForm, RegistrationForm, ChangePasswordForm,\
     ChangeEmailForm, PasswordResetForm, PasswordResetRequestForm
-from flask.ext.login import login_user, logout_user, login_required,\
+from flask_login import login_user, logout_user, login_required,\
     current_user
 from ..email import send_email
 from .. import db
 from ..models import User
-
+from PIL import Image
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -158,5 +158,4 @@ def password_reset(token):
         else:
             return redirect(url_for('main.index'))
     return render_template('auth/password_reset.html', form=form)
-
 
