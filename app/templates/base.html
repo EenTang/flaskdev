@@ -38,6 +38,7 @@
                 {% endif %}
             </url>
             <url class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('main.new_post') }}">新文章</a></li>
                 {% if current_user.can(Permission.MODERATE_COMMENTS) %}
                   <li><a href="{{ url_for('main.moderate') }}">修改评论</a></li>
                 {% endif %}
@@ -69,5 +70,16 @@
     {% endfor %}
     
     {% block page_content %}{% endblock %}
+</div>
+
+<div class="footer">
+    <div class="container">
+        <div style="float: left">Copyright © 2016 Eric-Tang</div>
+        <div style="float: right">
+            <a href="https://github.com/EenTang/flaskdev">flaskdev</a>
+            •
+            <a href="https://github.com/EenTang/flaskdev">EricTang</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

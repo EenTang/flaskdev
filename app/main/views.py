@@ -12,14 +12,6 @@ from flask_sqlalchemy import get_debug_queries
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    form = PostForm()
-    if form.validate_on_submit() and \
-            current_user.can(Permission.WRITE_ARTICLES):
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        flash('Your blog have been posted')
-        return redirect(url_for('.index'))
     show_followed = False
     if current_user.is_authenticated:
         show_followed = bool(request.cookies.get('show_followed', ''))
@@ -32,8 +24,27 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts,
+    return render_template('index.html', posts=posts,
                            show_followed=show_followed, pagination=pagination)
+
+@main.route('/ckupload/', methods=['POST', 'OPTIONS'])
+def ckupload():
+    form = PostForm()
+    response = form.upload(endpoint=main)
+    return response
+
+@main.route('/new_post', methods=['GET', 'POST'])
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit() and \
+            current_user.can(Permission.WRITE_ARTICLES):
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        flash('Your blog have been posted')
+        return redirect(url_for('.index'))
+    return render_template('edit_post.html', form=form)
+
 
 
 @main.route('/post/<int:id>', methods=['GET', 'POST'])
@@ -108,7 +119,7 @@ def edit(id):
         post.body = form.body.data
         db.session.add(post)
         flash('Your post have been update!')
-        return render_template(url_for('.post', id=post.id))
+        return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 

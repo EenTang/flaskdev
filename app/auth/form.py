@@ -5,7 +5,6 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, \
 from wtforms.validators import Required, Regexp, Email, Length, EqualTo
 from ..models import User
 
-
 class LoginForm(Form):
     email = StringField("Email", validators=[Required(),
                         Length(1, 64), Email()])
@@ -72,4 +71,3 @@ class PasswordResetForm(Form):
     def validate_email(self, field):  # 这个确认邮箱是怎么调用出来确认的？
         if User.query.filter_by(email=field.data).first() is None:
             raise ValidationError('Email already registered.')
-
